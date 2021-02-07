@@ -1,13 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, HostBinding, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, HostBinding, OnInit, Renderer2, Inject, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { createTheme } from './util/createTheme';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { readTheme } from './util/readTheme';
-import { materialThemeData } from './util/data';
-import { changeTheme } from './themeSwitcher.actions';
 import { MaterialThemeDataService } from './services/material-theme-data.service';
 
 export interface Theme {
@@ -38,13 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   fillerNav = Array.from({length: 5}, (_, i) => `Nav Item ${i + 1}`);
 
-  fillerContent = Array.from({length: 50}, () =>
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-       labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-       laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-       voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-       cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`);
-
   private _mobileQueryListener: () => void;
 
   themeSwitch$: Observable<number>;
@@ -54,6 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
     changeDetectorRef: ChangeDetectorRef, 
     media: MediaMatcher,
     private http: HttpClient,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private documentBody: Document,
     private MaterialThemeDataService: MaterialThemeDataService,
     private store: Store<{ themeSwitch: number }>
     ) { 
@@ -77,18 +71,24 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     this.store.select('themeSwitch').subscribe( ( id ) => {
-      //if(this.debug) {
+      if(this.debug) {
         console.log('app.component: ngOnInit: id: ',id,' this.MaterialThemeDataService.materialThemes: ',this.MaterialThemeDataService.materialThemes);
-      //}
+      }
       const materialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
-      //if(this.debug) {
+      if(this.debug) {
         console.log('app.component: ngOnInit: materialTheme: ',materialTheme);
-      //}
+      }
       const theme = materialTheme['default'];
       this.overlayContainer.getContainerElement().classList.add(theme);
       this.componentCssClass = theme;
+      const el: HTMLElement = this.documentBody.querySelector('#ngrx-logo-path');
+      if(el){
+        this.renderer.setAttribute(el,'fill',materialTheme['primaryHex']);
+      }
     });
+
   }
 
   ngOnDestroy(): void {

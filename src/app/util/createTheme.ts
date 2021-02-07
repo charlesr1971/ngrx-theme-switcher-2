@@ -24,7 +24,7 @@ export function createTheme(theme: any): any {
             result['colorName'] = themeObj['colorName'];
             result['primaryIndex'] = themeObj['primaryIndex'];
             result['primaryHex'] = themeObj['primaryHex'];
-            let colorNameTitle = themeObj['colorName'].replace("$","").replace("-"," ");
+            let colorNameTitle = themeObj['colorName'].replace("$","").replace(/[-]+/gim," ");
             result['colorNameTitle'] = colorNameTitle;
         }
     }

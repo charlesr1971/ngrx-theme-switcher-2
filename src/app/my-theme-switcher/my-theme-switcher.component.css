@@ -5,6 +5,7 @@
 .mat-card.theme-switcher-container {
     margin-bottom: 30px;
     padding: 20px;
+    text-transform: capitalize;
 }
 
 button {
