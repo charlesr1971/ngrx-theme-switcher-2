@@ -1,20 +1,37 @@
-import { ChangeDetectorRef, Component, OnDestroy, HostBinding } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, HostBinding, OnInit } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import {MediaMatcher} from '@angular/cdk/layout';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { createTheme } from './util/createTheme';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { readTheme } from './util/readTheme';
+import { materialThemeData } from './util/data';
+import { changeTheme } from './themeSwitcher.actions';
+import { MaterialThemeDataService } from './services/material-theme-data.service';
+
+export interface Theme {
+  id: number;
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
 
   debug = false;
   title = 'ngrx-counter';
 
   cssClassName: string = '';
   themeObj = {};
-  theme: string = 'theme-2-dark';
+  theme: any = {
+    themeName:'theme-2',
+    colorName:'$mat-red',
+    primaryIndex:'500',
+    primaryHex:'#F44336'
+  };
   @HostBinding('class') componentCssClass;
 
   mobileQuery: MediaQueryList;
@@ -30,9 +47,20 @@ export class AppComponent implements OnDestroy {
 
   private _mobileQueryListener: () => void;
 
-  constructor(public overlayContainer: OverlayContainer,changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) { 
+  themeSwitch$: Observable<number>;
 
-    this.themeObj = this.createTheme(this.theme);
+  constructor(
+    public overlayContainer: OverlayContainer,
+    changeDetectorRef: ChangeDetectorRef, 
+    media: MediaMatcher,
+    private http: HttpClient,
+    private MaterialThemeDataService: MaterialThemeDataService,
+    private store: Store<{ themeSwitch: number }>
+    ) { 
+
+    this.themeSwitch$ = store.select('themeSwitch');
+
+    this.themeObj = createTheme(this.theme);
     this.theme = this.themeObj['default'];
 
     if(this.debug) {
@@ -48,34 +76,19 @@ export class AppComponent implements OnDestroy {
 
   }
 
-  public createTheme(theme: string): any {
-    theme = theme.toString() === '0' ? '' : theme;
-    const result = {
-      default: 'theme-1-dark',
-      id: 1,
-      stem: 'theme-1',
-      light: 'theme-1-light',
-      dark: 'theme-1-dark'
-    };
-    if(this.debug) {
-      console.log('http.service: createTheme(): theme ',theme);
-    }
-    if(theme !== '') {
-      result['default'] = theme;
-      const themeArray = theme.split('-');
-      if(Array.isArray(themeArray) && themeArray.length === 3){
-        result['id'] = parseInt(themeArray[1]);
-        themeArray.pop();
-        const _theme = themeArray.join('-');
-        result['stem'] = _theme;
-        result['light'] = _theme + '-light';
-        result['dark'] = _theme + '-dark';
-      }
-    }
-    if(this.debug) {
-      console.log('http.service: createTheme(): result ',result);
-    }
-    return result;
+  ngOnInit() {
+    this.store.select('themeSwitch').subscribe( ( id ) => {
+      //if(this.debug) {
+        console.log('app.component: ngOnInit: id: ',id,' this.MaterialThemeDataService.materialThemes: ',this.MaterialThemeDataService.materialThemes);
+      //}
+      const materialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
+      //if(this.debug) {
+        console.log('app.component: ngOnInit: materialTheme: ',materialTheme);
+      //}
+      const theme = materialTheme['default'];
+      this.overlayContainer.getContainerElement().classList.add(theme);
+      this.componentCssClass = theme;
+    });
   }
 
   ngOnDestroy(): void {
