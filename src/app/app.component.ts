@@ -14,7 +14,7 @@ export class AppComponent implements OnDestroy {
 
   cssClassName: string = '';
   themeObj = {};
-  theme: string = 'theme-1-dark';
+  theme: string = 'theme-2-dark';
   @HostBinding('class') componentCssClass;
 
   mobileQuery: MediaQueryList;

@@ -1,0 +1,12 @@
+
+<mat-card>
+
+    <mat-card class="counter-container">Current Count: {{ themeSwitch$ | async }}</mat-card>
+
+    <button mat-raised-button color="primary" (click)="increment()">Increment</button>
+
+    <button mat-raised-button color="primary" (click)="decrement()">Decrement</button>
+
+    <button mat-raised-button color="primary" (click)="reset()">Reset Counter</button>
+
+</mat-card>
