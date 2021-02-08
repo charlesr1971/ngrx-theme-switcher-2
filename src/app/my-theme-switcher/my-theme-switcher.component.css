@@ -12,6 +12,10 @@
     height: 89px !important;
 }
 
+.mat-select-value-text {
+    text-transform: capitalize;
+}
+
 button {
     background: none;
     border: none;
