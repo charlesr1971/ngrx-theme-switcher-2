@@ -33,6 +33,7 @@
   .mat-sidenav-container {
       position: relative;
       height: 100%;
+      margin-top: 0px !important;
   }
 
   .mat-drawer-content {
@@ -41,6 +42,11 @@
 
   .mat-sidenav {
     width: 300px;
+  }
+
+  .sidenav-lower-content {
+    position: relative;
+    height: 60%;
   }
 
   img {
@@ -57,6 +63,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 200px;     
+    height: 200px;
   }
   
   

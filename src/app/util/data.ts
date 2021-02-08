@@ -1,4 +1,11 @@
-export const materialThemeData = [
+interface Theme {
+  themeName: string;
+  colorName: string;
+  primaryIndex: string;
+  primaryHex: string;
+}
+
+export const materialThemeData: Array<Theme> = [
   {
     themeName:'theme-1',
     colorName:'$mat-blue-grey',
