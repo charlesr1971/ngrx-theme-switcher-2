@@ -20,7 +20,7 @@ interface Theme {
 export function createTheme( theme: Theme ): MaterialTheme {
     const debug: boolean = false;
     const themeObj: Theme = theme;
-    const _theme: string = themeObj['themeName'].toString() === '0' ? '' : themeObj['themeName'];
+    const atheme: string = themeObj['themeName'].toString() === '0' ? '' : themeObj['themeName'];
     const result: MaterialTheme = {
         default: 'theme-1-dark',
         id: 1,
@@ -32,14 +32,14 @@ export function createTheme( theme: Theme ): MaterialTheme {
         primaryHex: '',
         colorNameTitle: ''
     };
-    if(debug) {
-        console.log('http.service: createTheme(): _theme ',_theme);
+    if (debug) {
+        console.log('http.service: createTheme(): atheme ', atheme);
     }
-    if(_theme !== '') {
-        result['default'] = _theme + '-dark';
-        const themeArray: Array<string> = (_theme as string).split('-');
-        if(Array.isArray(themeArray) && themeArray.length === 2){
-            const id: number = parseInt(themeArray[1]);
+    if (atheme !== '') {
+        result['default'] = atheme + '-dark';
+        const themeArray: Array<string> = (atheme as string).split('-');
+        if (Array.isArray(themeArray) && themeArray.length === 2) {
+            const id: number = parseInt( themeArray[1], 10 );
             result['id'] = id;
             result['stem'] = 'theme-' + id;
             result['light'] = 'theme-' + id + '-light';
@@ -47,12 +47,12 @@ export function createTheme( theme: Theme ): MaterialTheme {
             result['colorName'] = themeObj['colorName'];
             result['primaryIndex'] = themeObj['primaryIndex'];
             result['primaryHex'] = themeObj['primaryHex'];
-            const colorNameTitle: string = themeObj['colorName'].replace("$","").replace(/[-]+/gim," ");
+            const colorNameTitle: string = themeObj['colorName'].replace('$', '').replace(/[-]+/gim, ' ');
             result['colorNameTitle'] = colorNameTitle;
         }
     }
-    if(debug) {
-        console.log('util: createTheme(): result ',result);
+    if (debug) {
+        console.log('util: createTheme(): result ', result);
     }
     return result;
 }

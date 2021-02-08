@@ -5,19 +5,19 @@ export const initialState: number = 1;
 
 const debug: boolean = false;
 
-const _themeSwitcherReducer = createReducer(
+const themeSwitchereducer = createReducer(
   initialState,
   on(changeTheme, ( state, action ) => {
-    if(debug){
-      console.log('themeSwitcher.reducer: _themeSwitcherReducer: state ',state,' action:',action);
+    if (debug) {
+      console.log('themeSwitcher.reducer: themeSwitchereducer: state ', state, ' action:', action);
     }
-    return action.id
+    return action.id;
   })
 );
 
 export function themeSwitcherReducer( state, action ): any {
-  if(debug){
-    console.log('themeSwitcher.reducer: themeSwitcherReducer: state ',state,' action:',action);
+  if (debug) {
+    console.log('themeSwitcher.reducer: themeSwitcherReducer: state ', state, ' action:', action);
   }
-  return _themeSwitcherReducer(state, action);
+  return themeSwitchereducer(state, action);
 }

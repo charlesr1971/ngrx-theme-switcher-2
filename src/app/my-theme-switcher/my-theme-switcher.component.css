@@ -8,6 +8,10 @@
     text-transform: capitalize;
 }
 
+.mat-card .mat-form-field {
+    height: 89px !important;
+}
+
 button {
     background: none;
     border: none;
@@ -18,10 +22,3 @@ button {
 .mat-option {
     text-transform: capitalize;
 }
-
-/* .mat-select-trigger button {
-    background: none;
-    border: none;
-    vertical-align: middle;
-    margin-right: 10px;
-} */

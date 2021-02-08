@@ -36,26 +36,25 @@ export class MyThemeSwitcherComponent implements OnInit {
   constructor(
     private store: Store<{ themeSwitch: number }>,
     private MaterialThemeDataService: MaterialThemeDataService
-  ) 
-  {
+  ) {
     this.themeSwitch$ = store.select('themeSwitch');
     this.materialThemes = this.MaterialThemeDataService.materialThemes;
-    if(this.debug) {
-      console.log('my-theme-switcher.component: this.materialThemes: ',this.materialThemes);
+    if (this.debug) {
+      console.log('my-theme-switcher.component: this.materialThemes: ', this.materialThemes);
     }
   }
 
   changeTheme( event: any ): void {
     const id: number = event.value;
-    if(this.debug) {
-      console.log('my-theme-switcher.component: id: ',id);
+    if (this.debug) {
+      console.log('my-theme-switcher.component: id: ', id);
     }
-    this.store.dispatch(changeTheme({ id: id }));
+    this.store.dispatch(changeTheme({ id }));
     const materialTheme: MaterialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
-    if('primaryHex' in materialTheme){
+    if ('primaryHex' in materialTheme) {
       this.selectionPrimaryHex = materialTheme['primaryHex'];
     }
-    if('colorNameTitle' in materialTheme){
+    if ('colorNameTitle' in materialTheme) {
       this.selectionText = materialTheme['colorNameTitle'];
     }
   }
@@ -63,8 +62,8 @@ export class MyThemeSwitcherComponent implements OnInit {
   ngOnInit(): void {
     this.store.select('themeSwitch').subscribe( ( id ) => {
       const materialTheme: MaterialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
-      this.colorNameTitle = materialTheme['colorNameTitle']
-    })
+      this.colorNameTitle = materialTheme['colorNameTitle'];
+    });
   }
 
 }

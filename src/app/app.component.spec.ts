@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'ngrx-counter'`, () => {
+  it(`should have as title 'ngrx-theme-switcher'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('ngrx-counter');
+    expect(app.title).toEqual('ngrx-theme-switcher');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('ngrx-counter app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('ngrx-theme-switcher app is running!');
   });
 });

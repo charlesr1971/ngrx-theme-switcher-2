@@ -28,11 +28,11 @@ export class MaterialThemeDataService {
 
   materialThemes: Array<MaterialTheme> = [];
 
-  constructor() { 
+  constructor() {
     this.materialThemes = materialThemeData.map( ( currentValue, index ) => {
       const theme: Theme = currentValue;
       return createTheme(theme);
     });
   }
-  
+
 }

@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('ngrx-counter app is running!');
+    expect(page.getTitleText()).toEqual('ngrx-theme-switcher app is running!');
   });
 
   afterEach(async () => {

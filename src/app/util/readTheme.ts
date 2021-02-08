@@ -13,7 +13,7 @@ interface MaterialTheme {
 export function readTheme( materialThemes: Array<MaterialTheme>, id: number ): any {
     let result: any = {};
     materialThemes.map( ( currentValue, index ) => {
-      if(currentValue['id'] === id){
+      if (currentValue['id'] === id) {
         result = currentValue;
       }
     });

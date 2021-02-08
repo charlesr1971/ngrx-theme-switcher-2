@@ -36,68 +36,65 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private debug: boolean = false;
 
-  private title: string = 'ngrx-counter';
+  private title: string = 'ngrx-theme-switcher';
   private cssClassName: string = '';
   private themeObj: MaterialTheme;
   private theme: Theme = {
-    themeName:'theme-2',
-    colorName:'$mat-red',
-    primaryIndex:'500',
-    primaryHex:'#F44336'
+    themeName: 'theme-2',
+    colorName: '$mat-red',
+    primaryIndex: '500',
+    primaryHex: '#F44336'
   };
   @HostBinding('class') componentCssClass;
   private mobileQuery: MediaQueryList;
   private fillerNav = Array.from({length: 5}, (_, i) => `Nav Item ${i + 1}`);
-  private _mobileQueryListener: () => void;
+  private mobileQueryListener: () => void;
   private themeSwitch$: Observable<number>;
+  public shouldRun: boolean = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 
   constructor(
     private overlayContainer: OverlayContainer,
-    private changeDetectorRef: ChangeDetectorRef, 
+    private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private documentBody: Document,
     private MaterialThemeDataService: MaterialThemeDataService,
     private store: Store<{ themeSwitch: number }>
-  ) 
-  { 
+  ) {
     this.themeSwitch$ = store.select('themeSwitch');
     this.themeObj = createTheme(this.theme);
     const themeDefault: string = this.themeObj['default'];
-    if(this.debug) {
-      console.log('app.component: this.theme: ',themeDefault);
+    if (this.debug) {
+      console.log('app.component: this.theme: ', themeDefault);
     }
     this.overlayContainer.getContainerElement().classList.add(themeDefault);
     this.componentCssClass = themeDefault;
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
+    this.mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addEventListener('change', this.mobileQueryListener);
   }
 
   ngOnInit(): void {
     this.store.select('themeSwitch').subscribe( ( id ) => {
-      if(this.debug) {
-        console.log('app.component: ngOnInit: id: ',id,' this.MaterialThemeDataService.materialThemes: ',this.MaterialThemeDataService.materialThemes);
+      if (this.debug) {
+        console.log('app.component: ngOnInit: id: ', id, ' this.MaterialThemeDataService.materialThemes: ', this.MaterialThemeDataService.materialThemes);
       }
       const materialTheme: MaterialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
-      if(this.debug) {
-        console.log('app.component: ngOnInit: materialTheme: ',materialTheme);
+      if (this.debug) {
+        console.log('app.component: ngOnInit: materialTheme: ', materialTheme);
       }
       const themeDefault: string = materialTheme['default'];
       this.overlayContainer.getContainerElement().classList.add(themeDefault);
       this.componentCssClass = themeDefault;
       const el: HTMLElement = this.documentBody.querySelector('#ngrx-logo-path');
-      if(el){
-        this.renderer.setAttribute(el,'fill',materialTheme['primaryHex']);
+      if (el) {
+        this.renderer.setAttribute(el, 'fill', materialTheme['primaryHex']);
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.mobileQuery.removeEventListener('change', this.mobileQueryListener);
   }
-
-  shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
-
 
 }
