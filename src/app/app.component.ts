@@ -38,6 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private title: string = 'ngrx-theme-switcher';
   private cssClassName: string = '';
+  private id1: number = 0;
+  private id2: number = 0;
   private themeObj: MaterialTheme;
   private theme: Theme = {
     themeName: 'theme-2',
@@ -50,6 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private fillerNav = Array.from({length: 5}, (_, i) => `Nav Item ${i + 1}`);
   private mobileQueryListener: () => void;
   private themeSwitch$: Observable<number>;
+  private modeSwitch$: Observable<number>;
   public shouldRun: boolean = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 
   constructor(
@@ -59,9 +62,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     @Inject(DOCUMENT) private documentBody: Document,
     private MaterialThemeDataService: MaterialThemeDataService,
-    private store: Store<{ themeSwitch: number }>
+    private store1: Store<{ themeSwitch: number }>,
+    private store2: Store<{ modeSwitch: number }>,
   ) {
-    this.themeSwitch$ = store.select('themeSwitch');
+    this.themeSwitch$ = store1.select('themeSwitch');
+    this.modeSwitch$ = store2.select('modeSwitch');
     this.themeObj = createTheme(this.theme);
     const themeDefault: string = this.themeObj['default'];
     if (this.debug) {
@@ -75,15 +80,30 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.select('themeSwitch').subscribe( ( id ) => {
+    this.store1.select('themeSwitch').subscribe( ( id ) => {
       if (this.debug) {
         console.log('app.component: ngOnInit: id: ', id, ' this.MaterialThemeDataService.materialThemes: ', this.MaterialThemeDataService.materialThemes);
       }
       const materialTheme: MaterialTheme = readTheme( this.MaterialThemeDataService.materialThemes, id );
       if (this.debug) {
-        console.log('app.component: ngOnInit: materialTheme: ', materialTheme);
+        console.log('app.component: ngOnInit: materialTheme 1: ', materialTheme);
       }
-      const themeDefault: string = materialTheme['default'];
+      const themeDefault: string = this.id2 == 0 ? materialTheme['default'] : (this.id2 == 1 ? materialTheme['dark'] : materialTheme['light']);
+      this.id1 = id;
+      this.overlayContainer.getContainerElement().classList.add(themeDefault);
+      this.componentCssClass = themeDefault;
+      const el: HTMLElement = this.documentBody.querySelector('#ngrx-logo-path');
+      if (el) {
+        this.renderer.setAttribute(el, 'fill', materialTheme['primaryHex']);
+      }
+    });
+    this.store2.select('modeSwitch').subscribe( ( id ) => {
+      this.id2 = id;
+      const materialTheme: MaterialTheme = readTheme( this.MaterialThemeDataService.materialThemes, this.id1 );
+      if (this.debug) {
+        console.log('app.component: ngOnInit: materialTheme 2: ', materialTheme);
+      }
+      const themeDefault: string = id === 1 ? materialTheme['dark'] : materialTheme['light'];
       this.overlayContainer.getContainerElement().classList.add(themeDefault);
       this.componentCssClass = themeDefault;
       const el: HTMLElement = this.documentBody.querySelector('#ngrx-logo-path');

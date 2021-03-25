@@ -1,0 +1,28 @@
+.mat-card {
+    padding: 30px;
+}
+
+.mat-card.mode-switcher-container {
+    margin-bottom: 30px;
+    padding: 20px;
+    text-transform: capitalize;
+}
+
+.mat-card .mat-form-field {
+    height: 89px !important;
+}
+
+.mat-select-value-text {
+    text-transform: capitalize;
+}
+
+button {
+    background: none;
+    border: none;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.mat-option {
+    text-transform: capitalize;
+}

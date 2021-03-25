@@ -13,10 +13,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { modeSwitcherReducer } from './modeSwitcher.reducer';
+import { MyModeSwitcherComponent } from './my-mode-switcher/my-mode-switcher.component';
+
 @NgModule({
   declarations: [
     AppComponent,
-    MyThemeSwitcherComponent
+    MyThemeSwitcherComponent,
+    MyModeSwitcherComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatProgressSpinnerModule,
     MatRadioModule,
     OverlayModule,
-    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer })
+    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch:modeSwitcherReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]
