@@ -27,7 +27,11 @@
               "src/styles.css",
               "src/theme.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/gsap/src/uncompressed/TweenMax.js",
+              "node_modules/gsap/src/uncompressed/TimelineMax.js",
+              "node_modules/gsap/src/uncompressed/CustomWiggle.js"
+            ]
           },
           "configurations": {
             "production": {

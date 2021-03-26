@@ -46,7 +46,7 @@
 
   .sidenav-lower-content {
     position: relative;
-    height: 60%;
+    height: 300px;
   }
 
   img {
@@ -65,5 +65,8 @@
     width: 200px;     
     height: 200px;
   }
-  
+
+  .mat-drawer-content {
+    height: 830px !important;
+  }
   

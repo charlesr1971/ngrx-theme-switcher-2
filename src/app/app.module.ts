@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSnackBarModule, MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule, MatTreeModule, MatProgressBarModule, MatInputModule, MatSelectModule, MatDialogModule, MatAutocompleteModule, MatCheckboxModule, MatTooltipModule, MatDatepickerModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -15,12 +16,28 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { modeSwitcherReducer } from './modeSwitcher.reducer';
 import { MyModeSwitcherComponent } from './my-mode-switcher/my-mode-switcher.component';
+import { MyGuestbookComponent } from './my-guestbook/my-guestbook.component';
+
+import { HttpService } from './services/http.service';
+import { UtilsService } from './services/utils.service';
+
+import { createGuestbookReducer } from './createGuestbook.reducer';
+import { readGuestbookReducer } from './readGuestbook.reducer';
+
+import { EffectsModule } from '@ngrx/effects';
+import { CrudGuestbookEffects } from './crudGuestbook.effects';
+
+import { CustomTextDirective } from './directives/custom-text/custom-text.directive';
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MyThemeSwitcherComponent,
-    MyModeSwitcherComponent
+    MyModeSwitcherComponent,
+    MyGuestbookComponent,
+    CustomTextDirective
   ],
   imports: [
     BrowserModule,
@@ -28,6 +45,8 @@ import { MyModeSwitcherComponent } from './my-mode-switcher/my-mode-switcher.com
     HttpClientJsonpModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ReactiveFormsModule,
+    FormsModule,
     LayoutModule,
     MatSnackBarModule,
     MatToolbarModule,
@@ -54,9 +73,13 @@ import { MyModeSwitcherComponent } from './my-mode-switcher/my-mode-switcher.com
     MatProgressSpinnerModule,
     MatRadioModule,
     OverlayModule,
-    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch:modeSwitcherReducer })
+    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch: modeSwitcherReducer, createGuestbook: createGuestbookReducer, readGuestbook: readGuestbookReducer}),
+    EffectsModule.forRoot([CrudGuestbookEffects])
   ],
-  providers: [],
+  providers: [
+    HttpService,
+    UtilsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

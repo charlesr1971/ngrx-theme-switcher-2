@@ -2,6 +2,11 @@
     padding: 30px;
 }
 
+.mat-card.select {
+    float: left;
+    width: 45%;
+}
+
 .mat-card.theme-switcher-container {
     margin-bottom: 30px;
     padding: 20px;
@@ -25,4 +30,35 @@ button {
 
 .mat-option {
     text-transform: capitalize;
+}
+
+/* media queries */
+
+/* tablets */
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+
+
+}
+
+/* smart phones */
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+
+    .mat-card.select {
+        float: none;
+        width: auto;
+    }
+      
+
+}
+
+@media only screen and (min-device-width : 481px) and (max-device-width : 667px) {
+
+    .mat-card.select {
+        float: none;
+        width: auto;
+    }
+
+  
 }
