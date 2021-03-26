@@ -4,13 +4,19 @@
 
 .mat-card.select {
     float: left;
-    width: 45%;
+    width: 49%;
+    box-sizing: border-box;
 }
 
 .mat-card.theme-switcher-container {
+    width: 100%;
     margin-bottom: 30px;
     padding: 20px;
     text-transform: capitalize;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
 }
 
 .mat-card .mat-form-field {

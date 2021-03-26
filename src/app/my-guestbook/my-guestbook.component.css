@@ -49,6 +49,7 @@ button {
     position: relative;
     float: left;
     width: 49%;
+    box-sizing: border-box;
 }
 
 .guestbook-panel-text {
@@ -62,12 +63,15 @@ button {
 }
 
 .guestbook-panel .mat-card .date {
+    width: 100%;
     height: 19px;
     font-family: 'Roboto';
     font-size: 16px;
     font-weight: normal;
-    /* color: rgba(255,255,255,0.25); */
     opacity: 0.25;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     box-sizing: border-box;
 }
 
@@ -82,12 +86,15 @@ button {
 }
 
 .guestbook-panel .mat-card .name {
+    width: 75%;
     height: 17px;
     font-family: 'Roboto';
     font-size: 14px;
     font-weight: bold;
-    /* color: rgba(255,255,255,0.5); */
     opacity: 0.5;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     box-sizing: border-box;
 }
 
