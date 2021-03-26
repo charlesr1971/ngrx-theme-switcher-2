@@ -12,7 +12,7 @@ export class CustomTextDirective implements OnInit, AfterViewInit, OnChanges {
   @Input() appCustomTextStrLength: number = 4;
   @Input() appCustomText: string = '';
 
-  debug: boolean = true;
+  debug: boolean = false;
 
   customTextMaxStrLength: number = 8;
   customTextMinStrLength: number = 3;
@@ -42,8 +42,8 @@ export class CustomTextDirective implements OnInit, AfterViewInit, OnChanges {
     if (changes.appCustomText) {
       if(this.debug) {
         console.log('CustomTextDirective.component: ngOnChanges: changes.appCustomText.currentValue: ',changes.appCustomText.currentValue);
-        this.buildCustomText();
       }
+      this.buildCustomText();
     }   
   }
 
