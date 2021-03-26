@@ -192,6 +192,10 @@ button {
         margin: 0px 5px;
     }
 
+    .guestbook-panel .mat-card .mat-icon {
+        right: 30px;
+    }
+
     .app-custom-text {
         height: 270px;
     }
@@ -232,6 +236,10 @@ button {
 
     .guestbook-panel .mat-card .content span.space {
         margin: 0px 5px;
+    }
+
+    .guestbook-panel .mat-card .mat-icon {
+        right: 30px;
     }
 
     .app-custom-text {
