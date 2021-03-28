@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { changeMode } from './modeSwitcher.actions';
+import { changeMode } from '../actions/modeSwitcher.actions';
 
 export const initialState: number = 1;
 

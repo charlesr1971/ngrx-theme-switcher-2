@@ -56,7 +56,7 @@ export class HttpService {
         'content': data['content'] || ''
       })
     };
-    url = this.restApiUrlEndpoint + '/guestbook/0/0';
+    url = this.restApiUrlEndpoint + '/guestbook/0/1';
     if(this.debug) {
       console.log('HttpService.service: createGuestbook: headers ',headers);
     }

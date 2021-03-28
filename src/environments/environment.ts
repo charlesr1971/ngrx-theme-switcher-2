@@ -8,8 +8,8 @@ export const environment = {
   maxContentInputLength: 215,
   useRestApi: true,
   restApiURLReWrite: false,
-  //apiEndpointUrl: 'http://localhost:8500/react/react-router-es6/assets/cfm/rest/api/v1/index.cfm'
-  apiEndpointUrl: 'https://community.establishmindfulness.com/assets-react_es6_restapi/cfm/rest/api/v1/index.cfm'
+  apiEndpointUrl: 'http://localhost:8500/react/react-router-es6/assets/cfm/rest/api/v1/index.cfm'
+  //apiEndpointUrl: 'https://community.establishmindfulness.com/assets-react_es6_restapi/cfm/rest/api/v1/index.cfm'
 };
 
 /*

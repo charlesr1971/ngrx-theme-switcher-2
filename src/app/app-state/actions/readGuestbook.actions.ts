@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { Guestbook } from './my-guestbook/guestbook.model';
 
 export const readGuestbook = createAction(
     '[ReadGuestbook] ReadGuestbook API Request',

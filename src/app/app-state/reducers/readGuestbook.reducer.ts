@@ -1,12 +1,13 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import * as ReadGuestbookActions from './readGuestbook.actions';
+import * as ReadGuestbookActions from '../actions/readGuestbook.actions';
+import { Guestbook } from '../../my-guestbook/guestbook.model';
 
 export interface ReadGuestbookState {
-  id: string | null;
+  guestbooks: Array<Guestbook>;
 }
 
 export const initialState: ReadGuestbookState = {
-  id: null
+  guestbooks: []
 };
 
 export const readGuestbookReducer = createReducer(
@@ -15,21 +16,24 @@ export const readGuestbookReducer = createReducer(
     //console.log('ReadGuestbook.readGuestbookReducer: ReadGuestbookActions.readGuestbook: state: ',state,' action: ',action);
     return {
       ...state,
-      action: action
+      action: action,
+      guestbooks: [...state.guestbooks]
     }
   }),
   on(ReadGuestbookActions.readGuestbookSuccess, ( state, action ) => {
     //console.log('ReadGuestbook.readGuestbookReducer: ReadGuestbookActions.readGuestbookSuccess: state: ',state,' action: ',action);
     return {
       ...state,
-      action: action
+      action: action,
+      guestbooks: [...action.guestbooks]
     }
   }),
   on(ReadGuestbookActions.readGuestbookFailure, ( state, action ) => {
     //console.log('ReadGuestbook.readGuestbookReducer: ReadGuestbookActions.readGuestbookFailure: state: ',state,' action: ',action);
     return {
       ...state,
-      action: action
+      action: action,
+      guestbooks: [...state.guestbooks]
     }
   })
 );
@@ -37,3 +41,10 @@ export const readGuestbookReducer = createReducer(
 export function reducer(state: ReadGuestbookState | undefined, action: Action) {
   return readGuestbookReducer(state, action);
 }
+
+export const readGuestbooks = (state: ReadGuestbookState | undefined) => {
+  //console.log('ReadGuestbook.readGuestbookReducer: readGuestbooks: state: ',state);
+  return {
+    guestbooks: state ? state.guestbooks : null
+  };
+};

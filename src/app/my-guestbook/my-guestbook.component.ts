@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, Input, Inject, ElementRef, Renderer2, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { tap } from "rxjs/operators";
+import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { Store } from '@ngrx/store';
-import * as CreateGuestbookActions from '../createGuestbook.actions';
-import * as ReadGuestbookActions from '../readGuestbook.actions';
+import { Store, select } from '@ngrx/store';
+import * as CreateGuestbookActions from '../app-state/actions/createGuestbook.actions';
+import * as ReadGuestbookActions from '../app-state/actions/readGuestbook.actions';
+import * as fromRoot from '../app-state';
 
 import { CustomTextDirective } from '../directives/custom-text/custom-text.directive';
 
@@ -15,8 +15,6 @@ import { Guestbook } from './guestbook.model';
 import { HttpService } from '../services/http.service';
 import { UtilsService } from '../services/utils.service';
 import { environment } from '../../environments/environment';
-
-declare var TweenMax: any, Elastic: any, Linear: any;
 
 @Component({
   selector: 'app-my-guestbook',
@@ -37,7 +35,6 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
   maxTitleInputLength: number = environment.maxTitleInputLength;
   maxContentInputLength: number = environment.maxContentInputLength;
   currentPage: number = 1;
-  guestbooks: Array<Guestbook> = [];
   guestbookDate: string = '';
   guestbookContent: string = '';
   guestbookName: string = '';
@@ -55,6 +52,7 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private documentBody: Document,
     private el: ElementRef,
     private renderer: Renderer2,
+    private store: Store,
     private store1: Store<{ createGuestbook: any }>,
     private store2: Store<{ readGuestbook: any }>) { 
 
@@ -62,36 +60,59 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
       this.readGuestbook$ = store2.select('readGuestbook');
       this.readGuestbook();
 
-    }
+  }
 
   ngOnInit() {
     this.createFormControls();
     this.createForm();
     this.monitorFormValueChanges();
-    this.store1.select('createGuestbook').subscribe( ( data ) => {
+    this.store.pipe(select(fromRoot.createGuestbooks)).subscribe( (data) => {
+      //if(this.debug) {
+        console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: data: ',data);
+      //}
+      const proceed1 = !this.utilsService.isEmpty(data) && 'guestbooks' in data && Array.isArray(data['guestbooks']) && data['guestbooks'].length && 'display' in data && data['display'] === true  ? true : false;
       if(this.debug) {
-        console.log('MyGuestbookComponent.component: ngOnInit: store1.createGuestbook: data: ',data);
+        console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: proceed1: ',proceed1);
       }
-      if(data){
-        if('action' in data){
-          const proceed = 'hasProfanity' in data['action'] && 'error' in data['action'] && 'guestbookid' in data['action'] && !isNaN(data['action']['guestbookid']) && data['action']['guestbookid'] > 0 && 'title' in data['action'] && 'content' in data['action'] && 'createdAt' in data['action'] ? true : false;
-          if(proceed){
-            this.processCreateGuestbook(data['action']);
+      if(proceed1) {
+        const guestbooks = this.sortGuestbooksByDate(data['guestbooks'],'desc');
+        if(this.debug) {
+          console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: guestbooks: ',guestbooks);
+        }
+        if(guestbooks.length > 0){
+          const obj = guestbooks[0];
+          const proceed2 = !this.utilsService.isEmpty(obj) && 'guestbookid' in obj && !isNaN(obj['guestbookid']) && obj['guestbookid'] > 0 && 'title' in obj && 'content' in obj && 'createdAt' in obj ? true : false;
+          if(this.debug) {
+            console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: proceed2: ',proceed2);
+          }
+          if(proceed2) {
+            this.guestbookDate = obj['createdAt'];
+            this.guestbookContent = obj['content'];
+            this.guestbookName = obj['title'];
+            this.openSnackBar('Comment added successfully', 'Success');
+          }
+          else{
+            const hasprofanity = !this.utilsService.isEmpty(obj) && 'hasprofanity' in obj && !isNaN(obj['hasprofanity']) && obj['hasprofanity'] === 1 ? true : false;
+            if(hasprofanity){
+              this.openSnackBar('Please remove any profanities and try again', 'Error');
+              this.store1.dispatch(CreateGuestbookActions.createGuestbookRemoveProfanities());
+            }
+            else{
+              this.openSnackBar('Comment could not be added', 'Error');
+            }
           }
         }
       }
     });
-    this.store2.select('readGuestbook').subscribe( ( data ) => {
-      if(this.debug) {
-        console.log('MyGuestbookComponent.component: ngOnInit: store2.readGuestbook: data: ',data);
-      }
-      if(data){
-        if('action' in data){
-          const proceed = 'guestbooks' in data['action'] && Array.isArray(data['action']['guestbooks']) && data['action']['guestbooks'].length ? true : false;
-          if(proceed){
-            this.processReadGuestbook(data['action']);
-          }
-        }
+    this.store.pipe(select(fromRoot.readGuestbooks)).subscribe( (data) => {
+      //if(this.debug) {
+        console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.readGuestbooks: data: ',data);
+      //}
+      if(data.guestbooks.length > 0){
+        const obj = data.guestbooks[0];
+        this.guestbookDate = obj['createdAt'];
+        this.guestbookContent = obj['content'];
+        this.guestbookName = obj['title'];
       }
     });
   }
@@ -154,8 +175,7 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
       content: this.formData['content']
     }
     if(this.minInputLength < this.formData['content'].length) {
-      //this.createGuestbookSubscription = this.httpService.createGuestbook(data).pipe( tap( this.processCreateGuestbook ) ).subscribe();
-      this.store1.dispatch(CreateGuestbookActions.createGuestbook({title: this.formData['title'], content: this.formData['content']}));
+      this.store1.dispatch(CreateGuestbookActions.createGuestbook({credentials: {title: this.formData['title'], content: this.formData['content']}}));
     }
   }
 
@@ -163,168 +183,16 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
     if(this.debug) {
       console.log('MyGuestbookComponent.component: readGuestbook');
     }
-    //this.readGuestbookSubscription = this.httpService.readGuestbook(this.currentPage,0).pipe( tap( this.processReadGuestbook ) ).subscribe();
     this.store2.dispatch(ReadGuestbookActions.readGuestbook({page: this.currentPage, guestbookid: 0}));
   }
 
-  private processCreateGuestbook = (data: any) => {
-    if(this.debug) {
-      console.log('MyGuestbookComponent.component: processCreateGuestbook: data: ', data);
-    }
-    if(data) {
-      if(!this.utilsService.isEmpty(data)) {
-        if('hasProfanity' in data && !data['hasProfanity']) {
-          if('error' in data && data['error'] === '' && 'guestbookid' in data && !isNaN(data['guestbookid']) && data['guestbookid'] > 0 && 'title' in data && 'content' in data && 'createdAt' in data) {
-            const guestbook = new Guestbook({
-              guestbookid: data['guestbookid'],
-              title: data['title'],
-              content: data['content'],
-              createdAt: data['createdAt']
-            });
-            this.guestbooks.push(guestbook);
-            this.sortGuestbooksByDate('desc');
-            if(this.guestbooks.length > 0){
-              const obj = this.guestbooks[0];
-              this.guestbookDate = obj['createdAt'];
-              this.guestbookContent = obj['content'];
-              this.guestbookName = obj['title'];
-              //this.buildGuestbookContent();
-            }
-            if(this.debug) {
-              console.log('MyGuestbookComponent.component: processCreateGuestbook: this.guestbooks: ', this.guestbooks);
-            }
-            this.openSnackBar('Comment added successfully', 'Success');
-          }
-          else{
-            this.openSnackBar('Comment could not be added', 'Error');
-          }
-        }
-        else{
-          this.openSnackBar('Comment could not be added', 'Error');
-        }
-      }
-    }
-  }
-
-  private processReadGuestbook = (data: any) => {
-    if(this.debug) {
-      console.log('MyGuestbookComponent.component: processReadGuestbook: data: ', data);
-    }
-    if(data) {
-      this.currentPage++;
-      if(!this.utilsService.isEmpty(data) && 'guestbooks' in data && Array.isArray(data['guestbooks']) && data['guestbooks'].length) {
-        this.guestbooks = [];
-        data['guestbooks'].map( (item: any) => {
-          const guestbook = new Guestbook({
-            guestbookid: item['guestbookid'],
-            title: item['title'],
-            content: item['content'],
-            createdAt: item['createdAt']
-          });
-          this.guestbooks.push(guestbook);
-        });
-        this.sortGuestbooksByDate('desc');
-        if(this.guestbooks.length > 0){
-          const obj = this.guestbooks[0];
-          if(this.debug) {
-            console.log('MyGuestbookComponent.component: processReadGuestbook: obj: ', obj);
-          }
-          this.guestbookDate = obj['createdAt'];
-          this.guestbookContent = obj['content'];
-          this.guestbookName = obj['title'];
-          //this.buildGuestbookContent();
-        }
-
-        if(this.debug) {
-          console.log('MyGuestbookComponent.component: processReadGuestbook: this.guestbooks: ', this.guestbooks);
-        }
-        if(this.debug) {
-          console.log('MyGuestbookComponent.component: processReadGuestbook: this.sortGuestbooks: ', this.sortGuestbooks);
-        }
-      }
-    }
-  }
-
-  private buildGuestbookContent(): void {
-
-    const guestbookContentElement = this.documentBody.getElementById('guestbookContent');
-    const guestbookContentSpanElement = this.documentBody.getElementById('guestbookContentSpan');
-
-    const guestbookContentSpanElementArray = Array.prototype.slice.call(this.documentBody.querySelectorAll('.guestbookContentSpan'));
-
-    if(guestbookContentSpanElement) {
-      guestbookContentSpanElement.remove();
-    }
-
-    if(Array.isArray(guestbookContentSpanElementArray) && guestbookContentSpanElementArray.length) {
-      guestbookContentSpanElementArray.map( (element) => {
-        element.remove();
-      });
-    }
-
-    const guestbookContent = this.guestbookContent;
-
-    const guestbookContentArray = guestbookContent.split('');
-    if(guestbookContentArray.length > 0) {
-      for(var i = 0; i < guestbookContentArray.length; i++) {
-        const span2 = this.renderer.createElement('span');
-        this.renderer.setAttribute(span2,'class','guestbookContentSpan');
-        if(this.guestbookContentRotationMax > 0) {
-          this.renderer.setStyle(span2,'transform','rotate(' + this.getRandomInt(0,this.guestbookContentRotationMax)  + 'deg)');
-        }
-        const text2 = this.renderer.createText(guestbookContentArray[i]);
-        this.renderer.appendChild(span2,text2);
-        this.renderer.appendChild(guestbookContentElement,span2);
-      }
-    }
-
-    TweenMax.staggerFromTo('.guestbookContent span', 1, {scale: 0, opacity:0, ease:Elastic.easeOut, delay: 0}, {scale: 1, opacity:1, ease:Elastic.easeOut, delay: 0}, 0.25);
-
-  }
-
-  private getRandomInt(min: number = 1000000, max: number = 9999999): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
-  sortGuestbooksByDate(sortOrder: string): void {
-    this.guestbooks.sort(function(a, b) {
+  sortGuestbooksByDate(array: Array<Guestbook>, sortOrder: string): Array<Guestbook> {
+    let _array = [...array];
+    const temp = _array.sort(function(a, b) {
       const dateA: any = new Date(a.createdAt), dateB: any = new Date(b.createdAt);
       return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-  }
-
-  private sortGuestbooks(key: any, sortOrder: string ,sortType: string): void{
-    this.guestbooks.sort(function(a,b){
-      if(sortType.toLowerCase() == "text"){
-        var a = a[key].toLowerCase();
-        var b = b[key].toLowerCase();
-        var c = 0;
-        if (a > b) {
-          c = 1;
-        } 
-        else if (a < b) {
-          c = -1;
-        }
-        if(sortOrder.toLowerCase() == "asc"){
-          return c;
-        }
-        else{
-          return c * -1;
-        }
-      }
-      else{
-        const num1 = parseInt(a[key]);
-        const num2 = parseInt(b[key]);
-        if(sortOrder.toLowerCase() == "asc"){
-          return num1 - num2;
-        }
-        else{
-          return num2 - num1;
-        }
-      }
-    });
+    return temp;
   }
 
   private openSnackBar(message: string, action: string): void {

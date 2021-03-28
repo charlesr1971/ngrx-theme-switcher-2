@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { exhaustMap, map, catchError } from 'rxjs/operators';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
-import { HttpService } from './services/http.service';
+import { HttpService } from '../../services/http.service';
 
-import * as CreateGuestbookActions from './createGuestbook.actions';
-import * as ReadGuestbookActions from './readGuestbook.actions';
+import * as CreateGuestbookActions from '../actions/createGuestbook.actions';
+import * as ReadGuestbookActions from '../actions/readGuestbook.actions';
 
 @Injectable()
 export class CrudGuestbookEffects {
@@ -27,7 +27,7 @@ export class CrudGuestbookEffects {
     this.actions$.pipe(
       ofType(CreateGuestbookActions.createGuestbook),
       exhaustMap(action =>
-        this.httpService.createGuestbook(action).pipe(
+        this.httpService.createGuestbook(action['credentials']).pipe(
           map(response => CreateGuestbookActions.createGuestbookSuccess(response)),
           catchError((error: any) => of(CreateGuestbookActions.createGuestbookFailure(error))))
       )

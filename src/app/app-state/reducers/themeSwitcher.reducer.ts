@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { changeTheme } from './themeSwitcher.actions';
+import { changeTheme } from '../actions/themeSwitcher.actions';
 
 export const initialState: number = 1;
 

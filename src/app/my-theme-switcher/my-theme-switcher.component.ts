@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { changeTheme } from '../themeSwitcher.actions';
+import { changeTheme } from '../app-state/actions/themeSwitcher.actions';
 import { readTheme } from '../util/readTheme';
 import { MaterialThemeDataService } from '../services/material-theme-data.service';
 

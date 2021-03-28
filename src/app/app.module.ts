@@ -7,25 +7,25 @@ import { MatSnackBarModule, MatToolbarModule, MatButtonModule, MatSidenavModule,
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { StoreModule } from '@ngrx/store';
-import { themeSwitcherReducer } from './themeSwitcher.reducer';
+import { themeSwitcherReducer } from './app-state/reducers/themeSwitcher.reducer';
 import { MyThemeSwitcherComponent } from './my-theme-switcher/my-theme-switcher.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { modeSwitcherReducer } from './modeSwitcher.reducer';
+import { modeSwitcherReducer } from './app-state/reducers/modeSwitcher.reducer';
 import { MyModeSwitcherComponent } from './my-mode-switcher/my-mode-switcher.component';
 import { MyGuestbookComponent } from './my-guestbook/my-guestbook.component';
 
 import { HttpService } from './services/http.service';
 import { UtilsService } from './services/utils.service';
 
-import { createGuestbookReducer } from './createGuestbook.reducer';
-import { readGuestbookReducer } from './readGuestbook.reducer';
+import { createGuestbookReducer } from './app-state/reducers/createGuestbook.reducer';
+import { readGuestbookReducer } from './app-state/reducers/readGuestbook.reducer';
 
 import { EffectsModule } from '@ngrx/effects';
-import { CrudGuestbookEffects } from './crudGuestbook.effects';
+import { CrudGuestbookEffects } from './app-state/effects/crudGuestbook.effects';
 
 import { CustomTextDirective } from './directives/custom-text/custom-text.directive';
 
@@ -73,7 +73,10 @@ import { CustomTextDirective } from './directives/custom-text/custom-text.direct
     MatProgressSpinnerModule,
     MatRadioModule,
     OverlayModule,
-    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch: modeSwitcherReducer, createGuestbook: createGuestbookReducer, readGuestbook: readGuestbookReducer}),
+    /* StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch: modeSwitcherReducer, createGuestbook: createGuestbookReducer, readGuestbook: readGuestbookReducer }), */
+    StoreModule.forRoot({ themeSwitch: themeSwitcherReducer, modeSwitch: modeSwitcherReducer }),
+    StoreModule.forFeature('createGuestbook',createGuestbookReducer),
+    StoreModule.forFeature('readGuestbook',readGuestbookReducer),
     EffectsModule.forRoot([CrudGuestbookEffects])
   ],
   providers: [

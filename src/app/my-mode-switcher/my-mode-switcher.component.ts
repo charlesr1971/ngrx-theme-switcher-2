@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { changeMode } from '../modeSwitcher.actions';
+import { changeMode } from '../app-state/actions/modeSwitcher.actions';
 
 interface MaterialMode {
   id: number;
