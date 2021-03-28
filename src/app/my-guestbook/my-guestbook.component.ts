@@ -67,9 +67,9 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
     this.createForm();
     this.monitorFormValueChanges();
     this.store.pipe(select(fromRoot.createGuestbooks)).subscribe( (data) => {
-      //if(this.debug) {
+      if(this.debug) {
         console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: data: ',data);
-      //}
+      }
       const proceed1 = !this.utilsService.isEmpty(data) && 'guestbooks' in data && Array.isArray(data['guestbooks']) && data['guestbooks'].length && 'display' in data && data['display'] === true  ? true : false;
       if(this.debug) {
         console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.createGuestbooks: proceed1: ',proceed1);
@@ -105,9 +105,9 @@ export class MyGuestbookComponent implements OnInit, OnDestroy {
       }
     });
     this.store.pipe(select(fromRoot.readGuestbooks)).subscribe( (data) => {
-      //if(this.debug) {
+      if(this.debug) {
         console.log('MyGuestbookComponent.component: ngOnInit: FROMROOT.readGuestbooks: data: ',data);
-      //}
+      }
       if(data.guestbooks.length > 0){
         const obj = data.guestbooks[0];
         this.guestbookDate = obj['createdAt'];
