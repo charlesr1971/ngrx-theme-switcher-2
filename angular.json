@@ -29,8 +29,7 @@
             ],
             "scripts": [
               "node_modules/gsap/src/uncompressed/TweenMax.js",
-              "node_modules/gsap/src/uncompressed/TimelineMax.js",
-              "node_modules/gsap/src/uncompressed/CustomWiggle.js"
+              "node_modules/gsap/src/uncompressed/TimelineMax.js"
             ]
           },
           "configurations": {
