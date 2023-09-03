@@ -1,5 +1,5 @@
-import { Observable, ObservedValueOf, OperatorFunction } from 'rxjs';
+/* import { Observable, ObservedValueOf, OperatorFunction } from 'rxjs';
 export declare function concatLatestFrom<T extends Observable<unknown>[], V>(observablesFactory: (value: V) => [...any]): OperatorFunction<V, [V, ...{
     [i in keyof T]: ObservedValueOf<T[i]>;
 }]>;
-export declare function concatLatestFrom<T extends Observable<unknown>, V>(observableFactory: (value: V) => T): OperatorFunction<V, [V, ObservedValueOf<T>]>;
+export declare function concatLatestFrom<T extends Observable<unknown>, V>(observableFactory: (value: V) => T): OperatorFunction<V, [V, ObservedValueOf<T>]>; */
