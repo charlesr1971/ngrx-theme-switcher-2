@@ -11,7 +11,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+         "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/ngrx-theme-switcher",
             "index": "src/index.html",
@@ -30,7 +30,10 @@
             "scripts": [
               "node_modules/gsap/src/uncompressed/TweenMax.js",
               "node_modules/gsap/src/uncompressed/TimelineMax.js"
-            ]
+            ],
+            "customWebpackConfig": {
+              "path": "./angular.webpack.js"
+            }
           },
           "configurations": {
             "production": {
@@ -65,9 +68,12 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "ngrx-theme-switcher:build"
+            "browserTarget": "ngrx-theme-switcher:build",
+            "customWebpackConfig": {
+              "path": "./angular.webpack.js"
+            }
           },
           "configurations": {
             "production": {
