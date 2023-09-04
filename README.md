@@ -1,5 +1,8 @@
 # NgRx Theme Switcher
 
+An app that allows a user to change the theme from 19 pre-built Angular Material themes, in both light & dark mode. 
+There is also a Guest Book section that helps to highlight some of the great features of NgRx.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
 
 ## Development server
